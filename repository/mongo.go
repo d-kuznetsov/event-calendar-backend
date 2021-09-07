@@ -50,7 +50,7 @@ func CreateMongoClient(uri string) *mongo.Client {
 	return client
 }
 
-func CreateMongoRepo(client *mongo.Client, dbName string) Repository {
+func CreateMongoRepo(client *mongo.Client, dbName string) IRepository {
 	return &MongoRepository{
 		client: client,
 		dbName: dbName,
@@ -62,7 +62,7 @@ type MongoRepository struct {
 	dbName string
 }
 
-func (repo MongoRepository) CreateUser(name, email, hashedPassword string) (string, error) {
+func (repo *MongoRepository) CreateUser(name, email, hashedPassword string) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -78,7 +78,7 @@ func (repo MongoRepository) CreateUser(name, email, hashedPassword string) (stri
 	return res.InsertedID.(string), err
 }
 
-func (repo MongoRepository) GetUserByEmail(email string) (models.User, error) {
+func (repo *MongoRepository) GetUserByEmail(email string) (models.User, error) {
 	var user mongoUser
 	collection := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
