@@ -75,7 +75,8 @@ func (repo *MongoRepository) CreateUser(name, email, hashedPassword string) (str
 	if err != nil {
 		return "", err
 	}
-	return res.InsertedID.(string), err
+	id, _ := res.InsertedID.(primitive.ObjectID)
+	return id.Hex(), err
 }
 
 func (repo *MongoRepository) GetUserByEmail(email string) (models.User, error) {
@@ -83,9 +84,8 @@ func (repo *MongoRepository) GetUserByEmail(email string) (models.User, error) {
 	collection := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
-	err := collection.FindOne(ctx, bson.M{"username": email}).Decode(&user)
+	err := collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
 	if err == mongo.ErrNoDocuments {
-		fmt.Println("User does not exist")
 		return models.User{}, ErrNoUsersFound
 	}
 	return toModelUser(user), err
