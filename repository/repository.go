@@ -11,4 +11,4 @@ type IRepository interface {
 	GetUserByEmail(email string) (models.User, error)
 }
 
-var ErrNoUsersFound = errors.New("Repository: no users found")
+var ErrNoUsersFound = errors.New("repository error: no users found")

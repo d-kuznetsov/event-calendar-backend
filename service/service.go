@@ -42,7 +42,7 @@ type Service struct {
 	Repository repository.IRepository
 }
 
-var ErrUserExists = errors.New("service: user exists")
+var ErrUserExists = errors.New("service error: user exists")
 
 func (service *Service) Register(name, email, password string) (string, error) {
 	_, err := service.Repository.GetUserByEmail(email)
