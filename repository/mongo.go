@@ -86,7 +86,7 @@ func (repo *MongoRepository) GetUserByEmail(email string) (models.User, error) {
 	err := collection.FindOne(ctx, bson.M{"username": email}).Decode(&user)
 	if err == mongo.ErrNoDocuments {
 		fmt.Println("User does not exist")
-		return models.User{}, nil
+		return models.User{}, ErrNoUsersFound
 	}
 	return toModelUser(user), err
 }

@@ -1,10 +1,14 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/d-kuznetsov/calendar-backend/models"
 )
 
 type IRepository interface {
 	CreateUser(name, email, hashedPassword string) (string, error)
-	GetUserByEmail(emaul string) (models.User, error)
+	GetUserByEmail(email string) (models.User, error)
 }
+
+var ErrNoUsersFound = errors.New("Repository: no users found")
