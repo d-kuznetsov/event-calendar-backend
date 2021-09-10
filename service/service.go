@@ -42,6 +42,10 @@ type Service struct {
 	Repository repository.IRepository
 }
 
+func CreateService(repo repository.IRepository) IService {
+	return &Service{repo}
+}
+
 var ErrUserExists = errors.New("service error: user exists")
 
 func (service *Service) Register(name, email, password string) (string, error) {

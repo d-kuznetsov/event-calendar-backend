@@ -15,9 +15,8 @@ import (
 func main() {
 	router := mux.NewRouter()
 	client := repository.CreateMongoClient("mongodb://localhost:27017")
-	service := service.Service{
-		Repository: repository.CreateMongoRepo(client, "calendar"),
-	}
-	router.HandleFunc("/register", handler.CreateHttpHandler(handler.RegisterHandler, &service)).Methods("POST")
+	repo := repository.CreateMongoRepo(client, "calendar")
+	svc := service.CreateService(repo)
+	router.HandleFunc("/register", handler.CreateHttpHandler(handler.RegisterHandler, svc)).Methods("POST")
 	http.ListenAndServe(":8080", router)
 }
