@@ -23,7 +23,11 @@ func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.ISe
 	json.Unmarshal(body, &regData)
 	token, err := svc.Register(regData.Name, regData.Email, regData.Password)
 	if err == service.ErrUserExists {
-		http.Error(wtr, "User with this email already exists", http.StatusBadRequest)
+		throw400Error(wtr, "User with this email already exists")
+		return
+	} else if err != nil {
+		throw500Error(wtr)
+		return
 	}
 	wtr.Write([]byte(token))
 }
@@ -36,10 +40,10 @@ func LoginHandler(wtr http.ResponseWriter, req *http.Request, svc service.IServi
 	json.Unmarshal(body, &regData)
 	token, err := svc.Login(regData.Email, regData.Password)
 	if err == service.ErrUserDoesNotExist {
-		http.Error(wtr, "Incorrect email or password", http.StatusBadRequest)
+		throw400Error(wtr, "Incorrect email or password")
 		return
 	} else if err != nil {
-		http.Error(wtr, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		throw500Error(wtr)
 		return
 	}
 	wtr.Write([]byte(token))
@@ -49,4 +53,12 @@ type RegistrationData struct {
 	Name     string
 	Email    string
 	Password string
+}
+
+func throw400Error(wtr http.ResponseWriter, errMsg string) {
+	http.Error(wtr, errMsg, http.StatusBadRequest)
+}
+
+func throw500Error(wtr http.ResponseWriter) {
+	http.Error(wtr, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
