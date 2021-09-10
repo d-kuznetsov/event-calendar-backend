@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/d-kuznetsov/calendar-backend/models"
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
@@ -20,11 +19,17 @@ func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.ISe
 	len := req.ContentLength
 	body := make([]byte, len)
 	req.Body.Read(body)
-	var user models.User
-	json.Unmarshal(body, &user)
-	token, err := svc.Register(user.Name, user.Email, user.Password)
+	var regData RegistrationData
+	json.Unmarshal(body, &regData)
+	token, err := svc.Register(regData.Name, regData.Email, regData.Password)
 	if err == service.ErrUserExists {
 		http.Error(wtr, "User with this email already exists", http.StatusBadRequest)
 	}
 	wtr.Write([]byte(token))
+}
+
+type RegistrationData struct {
+	Name     string
+	Email    string
+	Password string
 }
