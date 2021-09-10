@@ -39,7 +39,7 @@ type IService interface {
 }
 
 type Service struct {
-	Repository repository.IRepository
+	repository repository.IRepository
 }
 
 func CreateService(repo repository.IRepository) IService {
@@ -49,14 +49,14 @@ func CreateService(repo repository.IRepository) IService {
 var ErrUserExists = errors.New("service error: user exists")
 
 func (service *Service) Register(name, email, password string) (string, error) {
-	_, err := service.Repository.GetUserByEmail(email)
+	_, err := service.repository.GetUserByEmail(email)
 	if err == nil {
 		return "", ErrUserExists
 	}
 	if err != nil && err != repository.ErrNoUsersFound {
 		return "", err
 	}
-	id, err := service.Repository.CreateUser(name, email, password)
+	id, err := service.repository.CreateUser(name, email, password)
 	if err != nil {
 		return "", err
 	}
