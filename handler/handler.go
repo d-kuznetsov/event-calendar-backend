@@ -19,7 +19,7 @@ func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.ISe
 	len := req.ContentLength
 	body := make([]byte, len)
 	req.Body.Read(body)
-	var regData RegistrationData
+	var regData Credentials
 	json.Unmarshal(body, &regData)
 	token, err := svc.Register(regData.Name, regData.Email, regData.Password)
 	if err == service.ErrUserExists {
@@ -36,9 +36,9 @@ func LoginHandler(wtr http.ResponseWriter, req *http.Request, svc service.IServi
 	len := req.ContentLength
 	body := make([]byte, len)
 	req.Body.Read(body)
-	var regData RegistrationData
-	json.Unmarshal(body, &regData)
-	token, err := svc.Login(regData.Email, regData.Password)
+	var loginData Credentials
+	json.Unmarshal(body, &loginData)
+	token, err := svc.Login(loginData.Email, loginData.Password)
 	if err == service.ErrUserDoesNotExist {
 		throw400Error(wtr, "Incorrect email or password")
 		return
@@ -49,7 +49,7 @@ func LoginHandler(wtr http.ResponseWriter, req *http.Request, svc service.IServi
 	wtr.Write([]byte(token))
 }
 
-type RegistrationData struct {
+type Credentials struct {
 	Name     string
 	Email    string
 	Password string
