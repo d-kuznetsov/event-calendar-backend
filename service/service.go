@@ -11,7 +11,10 @@ type IService interface {
 	ParseToken(token string) (string, error)
 	Register(name, email, password string) (string, error)
 	Login(email, password string) (string, error)
+	CreateEvent(params EventOpts) (string, error)
 }
+
+type EventOpts = repository.EventOpts
 
 type Service struct {
 	repository repository.IRepository
@@ -58,4 +61,8 @@ func (service *Service) Login(email, password string) (string, error) {
 		return "", ErrUserDoesNotExist
 	}
 	return generateToken(user.Id)
+}
+
+func (service *Service) CreateEvent(params EventOpts) (string, error) {
+	return service.repository.CreateEvent(params)
 }
