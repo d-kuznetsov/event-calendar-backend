@@ -1,8 +1,6 @@
 package main
 
 import (
-	_ "fmt"
-	_ "log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -13,11 +11,11 @@ import (
 )
 
 func main() {
-	router := mux.NewRouter()
 	client := mongodb.CreateClient("mongodb://localhost:27017")
 	repo := mongodb.CreateRepository(client, "calendar")
 	svc := service.CreateService(repo)
 
+	router := mux.NewRouter()
 	router.HandleFunc("/register", handler.CreateHttpHandler(handler.RegisterHandler, svc)).Methods("POST")
 	router.HandleFunc("/login", handler.CreateHttpHandler(handler.LoginHandler, svc)).Methods("POST")
 	router.HandleFunc("/create-event", handler.CreateHttpHandler(handler.CreateEventHandler, svc)).Methods("POST")
