@@ -3,12 +3,12 @@ package repository
 import (
 	"errors"
 
-	"github.com/d-kuznetsov/calendar-backend/models"
+	"github.com/d-kuznetsov/calendar-backend/entities"
 )
 
 type IRepository interface {
 	CreateUser(name, email, hashedPassword string) (string, error)
-	GetUserByEmail(email string) (models.User, error)
+	GetUserByEmail(email string) (entities.User, error)
 	CreateEvent(opts EventOpts) (string, error)
 }
 

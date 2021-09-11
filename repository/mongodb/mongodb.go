@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/d-kuznetsov/calendar-backend/models"
+	"github.com/d-kuznetsov/calendar-backend/entities"
 	"github.com/d-kuznetsov/calendar-backend/repository"
 )
 
@@ -54,8 +54,8 @@ type dbUser struct {
 	Password string             `bson:"password"`
 }
 
-func toModelUser(user dbUser) models.User {
-	return models.User{
+func toModelUser(user dbUser) entities.User {
+	return entities.User{
 		Id:       user.Id.Hex(),
 		Name:     user.Name,
 		Email:    user.Email,
@@ -80,14 +80,14 @@ func (repo *mongoRepo) CreateUser(name, email, hashedPassword string) (string, e
 	return id.Hex(), err
 }
 
-func (repo *mongoRepo) GetUserByEmail(email string) (models.User, error) {
+func (repo *mongoRepo) GetUserByEmail(email string) (entities.User, error) {
 	var user dbUser
 	collection := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	err := collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
 	if err == mongo.ErrNoDocuments {
-		return models.User{}, repository.ErrNoUsersFound
+		return entities.User{}, repository.ErrNoUsersFound
 	}
 	return toModelUser(user), err
 }
