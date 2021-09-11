@@ -40,7 +40,7 @@ type Repository struct {
 	dbName string
 }
 
-func CreateRepo(client *mongo.Client, dbName string) repository.IRepository {
+func CreateRepository(client *mongo.Client, dbName string) repository.IRepository {
 	return &Repository{
 		client: client,
 		dbName: dbName,
