@@ -101,19 +101,19 @@ type dbEvent struct {
 	UserId    primitive.ObjectID `json:"userId"`
 }
 
-func (repo *Repository) CreateEvent(opts repository.EventOpts) (string, error) {
+func (repo *Repository) CreateEvent(params repository.EventOpts) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	userId, err := primitive.ObjectIDFromHex(opts.UserId)
+	userId, err := primitive.ObjectIDFromHex(params.UserId)
 	if err != nil {
 		return "", err
 	}
 	event := dbEvent{
-		Date:      opts.Date,
-		StartTime: opts.StartTime,
-		EndTime:   opts.EndTime,
-		Content:   opts.Content,
+		Date:      params.Date,
+		StartTime: params.StartTime,
+		EndTime:   params.EndTime,
+		Content:   params.Content,
 		UserId:    userId,
 	}
 	res, err := coll.InsertOne(ctx, event)
