@@ -5,7 +5,7 @@ import (
 )
 
 func TestToken(t *testing.T) {
-	initPayload := "email@test"
+	initPayload := "1234567"
 	tokenStr, err := generateToken(initPayload)
 	if err != nil {
 		t.Error("Token generating error:", err)
@@ -15,6 +15,6 @@ func TestToken(t *testing.T) {
 		t.Error("Token parsing error:", err)
 	}
 	if payload != initPayload {
-		t.Error("Wrong email, was expecting " + initPayload + " but got " + payload)
+		t.Error("Wrong payload, was expecting " + initPayload + " but got " + payload)
 	}
 }

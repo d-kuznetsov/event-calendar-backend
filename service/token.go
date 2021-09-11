@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"time"
 
@@ -21,10 +22,10 @@ func generateToken(payload string) (string, error) {
 
 func parseToken(tokenStr string) (string, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (i interface{}, err error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		_, ok := token.Method.(*jwt.SigningMethodHMAC)
+		if !ok {
+			return nil, fmt.Errorf("token error: unexpected signing method: %v", token.Header["alg"])
 		}
-
 		return []byte(signingKey), nil
 	})
 	if err != nil {
@@ -34,7 +35,7 @@ func parseToken(tokenStr string) (string, error) {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return "", fmt.Errorf("error get user claims from token")
+		return "", errors.New("token error: receiving claims from token")
 	}
 
 	return claims["sub"].(string), nil
