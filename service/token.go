@@ -11,10 +11,10 @@ var signingKey = "test_key"
 
 const tokenTTL = 12 * time.Hour
 
-func generateToken(email string) (string, error) {
+func generateToken(payload string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		ExpiresAt: time.Now().Add(tokenTTL).Unix(),
-		Subject:   email,
+		Subject:   payload,
 	})
 	return token.SignedString([]byte(signingKey))
 }
