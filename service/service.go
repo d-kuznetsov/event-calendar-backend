@@ -16,6 +16,9 @@ type IService interface {
 
 type EventOpts = repository.EventOpts
 
+var ErrUserAlreadyExists = errors.New("service error: user already exists")
+var ErrUserDoesNotExist = errors.New("service error: user does not exist")
+
 type Service struct {
 	repository repository.IRepository
 }
@@ -23,9 +26,6 @@ type Service struct {
 func CreateService(repo repository.IRepository) IService {
 	return &Service{repo}
 }
-
-var ErrUserExists = errors.New("service error: user exists")
-var ErrUserDoesNotExist = errors.New("service error: user does not exist")
 
 func (service *Service) CreateToken(id string) (string, error) {
 	return generateToken(id)
@@ -38,7 +38,7 @@ func (service *Service) ParseToken(token string) (string, error) {
 func (service *Service) Register(name, email, password string) (string, error) {
 	_, err := service.repository.GetUserByEmail(email)
 	if err == nil {
-		return "", ErrUserExists
+		return "", ErrUserAlreadyExists
 	}
 	if err != nil && err != repository.ErrNoUsersFound {
 		return "", err

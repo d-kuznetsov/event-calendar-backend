@@ -22,7 +22,7 @@ func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.ISe
 	var regData Credentials
 	json.Unmarshal(body, &regData)
 	userId, err := svc.Register(regData.Name, regData.Email, regData.Password)
-	if err == service.ErrUserExists {
+	if err == service.ErrUserAlreadyExists {
 		throw400Error(wtr, "User with this email already exists")
 		return
 	} else if err != nil {
