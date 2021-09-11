@@ -30,11 +30,11 @@ func (service *Service) Register(name, email, password string) (string, error) {
 	if err != nil && err != repository.ErrNoUsersFound {
 		return "", err
 	}
-	id, err := service.repository.CreateUser(name, email, password)
+	userId, err := service.repository.CreateUser(name, email, password)
 	if err != nil {
 		return "", err
 	}
-	return generateToken(id, name, email)
+	return generateToken(userId)
 }
 
 func (service *Service) Login(email, password string) (string, error) {
@@ -47,5 +47,5 @@ func (service *Service) Login(email, password string) (string, error) {
 	if user.Email != email {
 		return "", ErrUserDoesNotExist
 	}
-	return generateToken(user.Id, user.Name, user.Email)
+	return generateToken(user.Id)
 }
