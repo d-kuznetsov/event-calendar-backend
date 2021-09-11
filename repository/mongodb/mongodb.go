@@ -35,13 +35,13 @@ func CreateClient(uri string) *mongo.Client {
 	return client
 }
 
-type Repository struct {
+type mongoRepo struct {
 	client *mongo.Client
 	dbName string
 }
 
 func CreateRepository(client *mongo.Client, dbName string) repository.IRepository {
-	return &Repository{
+	return &mongoRepo{
 		client: client,
 		dbName: dbName,
 	}
@@ -63,7 +63,7 @@ func toModelUser(user dbUser) models.User {
 	}
 }
 
-func (repo *Repository) CreateUser(name, email, hashedPassword string) (string, error) {
+func (repo *mongoRepo) CreateUser(name, email, hashedPassword string) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -80,7 +80,7 @@ func (repo *Repository) CreateUser(name, email, hashedPassword string) (string, 
 	return id.Hex(), err
 }
 
-func (repo *Repository) GetUserByEmail(email string) (models.User, error) {
+func (repo *mongoRepo) GetUserByEmail(email string) (models.User, error) {
 	var user dbUser
 	collection := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -101,7 +101,7 @@ type dbEvent struct {
 	UserId    primitive.ObjectID `json:"userId"`
 }
 
-func (repo *Repository) CreateEvent(params repository.EventOpts) (string, error) {
+func (repo *mongoRepo) CreateEvent(params repository.EventOpts) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
