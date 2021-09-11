@@ -21,11 +21,16 @@ func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.ISe
 	req.Body.Read(body)
 	var regData Credentials
 	json.Unmarshal(body, &regData)
-	token, err := svc.Register(regData.Name, regData.Email, regData.Password)
+	userId, err := svc.Register(regData.Name, regData.Email, regData.Password)
 	if err == service.ErrUserExists {
 		throw400Error(wtr, "User with this email already exists")
 		return
 	} else if err != nil {
+		throw500Error(wtr)
+		return
+	}
+	token, err := svc.CreateToken(userId)
+	if err != nil {
 		throw500Error(wtr)
 		return
 	}
@@ -38,11 +43,16 @@ func LoginHandler(wtr http.ResponseWriter, req *http.Request, svc service.IServi
 	req.Body.Read(body)
 	var loginData Credentials
 	json.Unmarshal(body, &loginData)
-	token, err := svc.Login(loginData.Email, loginData.Password)
+	userId, err := svc.Login(loginData.Email, loginData.Password)
 	if err == service.ErrUserDoesNotExist {
 		throw400Error(wtr, "Incorrect email or password")
 		return
 	} else if err != nil {
+		throw500Error(wtr)
+		return
+	}
+	token, err := svc.CreateToken(userId)
+	if err != nil {
 		throw500Error(wtr)
 		return
 	}

@@ -47,7 +47,7 @@ func (service *Service) Register(name, email, password string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return generateToken(userId)
+	return userId, err
 }
 
 func (service *Service) Login(email, password string) (string, error) {
@@ -60,7 +60,7 @@ func (service *Service) Login(email, password string) (string, error) {
 	if user.Email != email {
 		return "", ErrUserDoesNotExist
 	}
-	return generateToken(user.Id)
+	return user.Id, err
 }
 
 func (service *Service) CreateEvent(params EventOpts) (string, error) {
