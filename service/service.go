@@ -7,6 +7,8 @@ import (
 )
 
 type IService interface {
+	CreateToken(id string) (string, error)
+	ParseToken(token string) (string, error)
 	Register(name, email, password string) (string, error)
 	Login(email, password string) (string, error)
 }
@@ -21,6 +23,14 @@ func CreateService(repo repository.IRepository) IService {
 
 var ErrUserExists = errors.New("service error: user exists")
 var ErrUserDoesNotExist = errors.New("service error: user does not exist")
+
+func (service *Service) CreateToken(id string) (string, error) {
+	return generateToken(id)
+}
+
+func (service *Service) ParseToken(token string) (string, error) {
+	return parseToken(token)
+}
 
 func (service *Service) Register(name, email, password string) (string, error) {
 	_, err := service.repository.GetUserByEmail(email)
