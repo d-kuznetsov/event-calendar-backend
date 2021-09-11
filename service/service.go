@@ -57,7 +57,7 @@ func (service *Service) Login(email, password string) (string, error) {
 	} else if err != nil {
 		return "", err
 	}
-	if user.Email != email {
+	if user.Password != password {
 		return "", ErrUserDoesNotExist
 	}
 	return user.Id, err
