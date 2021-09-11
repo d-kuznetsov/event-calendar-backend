@@ -1,4 +1,4 @@
-package repository
+package mongodb
 
 import (
 	"context"
@@ -12,9 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/d-kuznetsov/calendar-backend/models"
+	"github.com/d-kuznetsov/calendar-backend/repository"
 )
 
-func CreateMongoClient(uri string) *mongo.Client {
+func CreateClient(uri string) *mongo.Client {
 	clientOpts := options.Client().ApplyURI(uri)
 	client, err := mongo.NewClient(clientOpts)
 	if err != nil {
@@ -34,26 +35,26 @@ func CreateMongoClient(uri string) *mongo.Client {
 	return client
 }
 
-func CreateMongoRepo(client *mongo.Client, dbName string) IRepository {
-	return &MongoRepository{
+type Repository struct {
+	client *mongo.Client
+	dbName string
+}
+
+func CreateRepo(client *mongo.Client, dbName string) repository.IRepository {
+	return &Repository{
 		client: client,
 		dbName: dbName,
 	}
 }
 
-type MongoRepository struct {
-	client *mongo.Client
-	dbName string
-}
-
-type mongoUser struct {
+type dbUser struct {
 	Id       primitive.ObjectID `bson:"id,omitempty"`
 	Name     string             `bson:"name"`
 	Email    string             `bson:"email"`
 	Password string             `bson:"password"`
 }
 
-func toModelUser(user mongoUser) models.User {
+func toModelUser(user dbUser) models.User {
 	return models.User{
 		Id:       user.Id.Hex(),
 		Name:     user.Name,
@@ -62,11 +63,11 @@ func toModelUser(user mongoUser) models.User {
 	}
 }
 
-func (repo *MongoRepository) CreateUser(name, email, hashedPassword string) (string, error) {
+func (repo *Repository) CreateUser(name, email, hashedPassword string) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	user := mongoUser{
+	user := dbUser{
 		Name:     name,
 		Email:    email,
 		Password: hashedPassword,
@@ -79,19 +80,19 @@ func (repo *MongoRepository) CreateUser(name, email, hashedPassword string) (str
 	return id.Hex(), err
 }
 
-func (repo *MongoRepository) GetUserByEmail(email string) (models.User, error) {
-	var user mongoUser
+func (repo *Repository) GetUserByEmail(email string) (models.User, error) {
+	var user dbUser
 	collection := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	err := collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
 	if err == mongo.ErrNoDocuments {
-		return models.User{}, ErrNoUsersFound
+		return models.User{}, repository.ErrNoUsersFound
 	}
 	return toModelUser(user), err
 }
 
-type mongoEvent struct {
+type dbEvent struct {
 	Id        primitive.ObjectID `bson:"id,omitempty"`
 	Date      string             `json:"date"`
 	StartTime string             `json:"startTime"`
@@ -100,7 +101,7 @@ type mongoEvent struct {
 	UserId    primitive.ObjectID `json:"userId"`
 }
 
-func (repo *MongoRepository) CreateEvent(opts EventOpts) (string, error) {
+func (repo *Repository) CreateEvent(opts repository.EventOpts) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -108,7 +109,7 @@ func (repo *MongoRepository) CreateEvent(opts EventOpts) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	event := mongoEvent{
+	event := dbEvent{
 		Date:      opts.Date,
 		StartTime: opts.StartTime,
 		EndTime:   opts.EndTime,
