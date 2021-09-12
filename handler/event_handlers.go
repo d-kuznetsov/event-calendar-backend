@@ -14,11 +14,8 @@ func CreateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 		throw401Error(wtr)
 		return
 	}
-	len := req.ContentLength
-	body := make([]byte, len)
-	req.Body.Read(body)
 	eventOpts := service.EventOpts{}
-	json.Unmarshal(body, &eventOpts)
+	json.NewDecoder(req.Body).Decode(&eventOpts)
 	eventOpts.UserId = userId
 	eventId, err := svc.CreateEvent(eventOpts)
 	if err != nil {
