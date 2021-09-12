@@ -29,5 +29,8 @@ func throw500Error(wtr http.ResponseWriter) {
 func extractToken(req *http.Request) string {
 	prefix := "Bearer "
 	authHeader := req.Header.Get("Authorization")
+	if len(authHeader) < len(prefix) {
+		return authHeader
+	}
 	return authHeader[len(prefix):]
 }
