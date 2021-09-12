@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 
+	"github.com/d-kuznetsov/calendar-backend/entities"
 	"github.com/d-kuznetsov/calendar-backend/repository"
 )
 
@@ -10,7 +11,7 @@ type IService interface {
 	CreateToken(id string) (string, error)
 	ParseToken(token string) (string, error)
 	Register(name, email, password string) (string, error)
-	Login(email, password string) (string, error)
+	Login(email, password string) (entities.User, error)
 	CreateEvent(params EventOpts) (string, error)
 }
 
@@ -50,17 +51,17 @@ func (service *Service) Register(name, email, password string) (string, error) {
 	return userId, err
 }
 
-func (service *Service) Login(email, password string) (string, error) {
+func (service *Service) Login(email, password string) (entities.User, error) {
 	user, err := service.repository.GetUserByEmail(email)
 	if err == repository.ErrNoUsersFound {
-		return "", ErrUserDoesNotExist
+		return entities.User{}, ErrUserDoesNotExist
 	} else if err != nil {
-		return "", err
+		return entities.User{}, err
 	}
 	if user.Password != password {
-		return "", ErrUserDoesNotExist
+		return entities.User{}, ErrUserDoesNotExist
 	}
-	return user.Id, err
+	return user, err
 }
 
 func (service *Service) CreateEvent(params EventOpts) (string, error) {
