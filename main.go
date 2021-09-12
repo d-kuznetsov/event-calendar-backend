@@ -20,11 +20,12 @@ func main() {
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"http://localhost:3000"},
 		AllowCredentials: true,
-		Debug:            true,
+		Debug:            false,
 	})
 	router.HandleFunc("/register", handler.CreateHttpHandler(handler.RegisterHandler, svc)).Methods("POST")
 	router.HandleFunc("/login", handler.CreateHttpHandler(handler.LoginHandler, svc)).Methods("POST")
 	router.HandleFunc("/create-event", handler.CreateHttpHandler(handler.CreateEventHandler, svc)).Methods("POST")
+	router.HandleFunc("/user-events", handler.CreateHttpHandler(handler.GetUserEventsHandler, svc)).Methods("GET")
 
 	http.ListenAndServe(":8080", corsHandler.Handler(router))
 }
