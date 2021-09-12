@@ -48,7 +48,7 @@ func CreateRepository(client *mongo.Client, dbName string) repository.IRepositor
 }
 
 type dbUser struct {
-	Id       primitive.ObjectID `bson:"id,omitempty"`
+	Id       primitive.ObjectID `bson:"_id,omitempty"`
 	Name     string             `bson:"name"`
 	Email    string             `bson:"email"`
 	Password string             `bson:"password"`
@@ -93,7 +93,7 @@ func (repo *mongoRepo) GetUserByEmail(email string) (entities.User, error) {
 }
 
 type dbEvent struct {
-	Id        primitive.ObjectID `bson:"id,omitempty"`
+	Id        primitive.ObjectID `bson:"_id,omitempty"`
 	Date      string             `json:"date"`
 	StartTime string             `json:"startTime"`
 	EndTime   string             `json:"endTime"`
@@ -101,11 +101,22 @@ type dbEvent struct {
 	UserId    primitive.ObjectID `json:"userId"`
 }
 
+func toEntityEvent(event dbEvent) entities.Event {
+	return entities.Event{
+		Id:        event.Id.Hex(),
+		Date:      event.Date,
+		StartTime: event.StartTime,
+		EndTime:   event.EndTime,
+		Content:   event.Content,
+		UserId:    event.UserId.Hex(),
+	}
+}
+
 func (repo *mongoRepo) CreateEvent(params repository.EventOpts) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	userId, err := primitive.ObjectIDFromHex(params.UserId)
+	dbId, err := primitive.ObjectIDFromHex(params.UserId)
 	if err != nil {
 		return "", err
 	}
@@ -114,7 +125,7 @@ func (repo *mongoRepo) CreateEvent(params repository.EventOpts) (string, error) 
 		StartTime: params.StartTime,
 		EndTime:   params.EndTime,
 		Content:   params.Content,
-		UserId:    userId,
+		UserId:    dbId,
 	}
 	res, err := coll.InsertOne(ctx, event)
 	if err != nil {
@@ -122,4 +133,29 @@ func (repo *mongoRepo) CreateEvent(params repository.EventOpts) (string, error) 
 	}
 	id, _ := res.InsertedID.(primitive.ObjectID)
 	return id.Hex(), err
+}
+
+func (repo *mongoRepo) GetUserEvents(userId string) ([]entities.Event, error) {
+	coll := repo.client.Database(repo.dbName).Collection("events")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	dbUserId, _ := primitive.ObjectIDFromHex(userId)
+	cursor, err := coll.Find(ctx, bson.M{"userid": dbUserId})
+	var events []entities.Event
+	if err != nil {
+		return events, err
+	}
+
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx) {
+		var e dbEvent
+		err = cursor.Decode(&e)
+		if err != nil {
+			return events, err
+		}
+		events = append(events, toEntityEvent(e))
+	}
+
+	return events, err
 }
