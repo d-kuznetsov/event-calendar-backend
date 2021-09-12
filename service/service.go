@@ -13,6 +13,7 @@ type IService interface {
 	Register(name, email, password string) (string, error)
 	Login(email, password string) (entities.User, error)
 	CreateEvent(params EventOpts) (string, error)
+	GetUserEvents(userId string) ([]entities.Event, error)
 }
 
 type EventOpts = repository.EventOpts
@@ -66,4 +67,8 @@ func (service *Service) Login(email, password string) (entities.User, error) {
 
 func (service *Service) CreateEvent(params EventOpts) (string, error) {
 	return service.repository.CreateEvent(params)
+}
+
+func (service *Service) GetUserEvents(userId string) ([]entities.Event, error) {
+	return service.repository.GetUserEvents(userId)
 }
