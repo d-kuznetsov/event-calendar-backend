@@ -27,3 +27,18 @@ func CreateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	}
 	wtr.Write([]byte(eventId))
 }
+
+func GetUserEventsHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+	token := extractToken(req)
+	userId, err := svc.ParseToken(token)
+	if err != nil {
+		throw401Error(wtr)
+		return
+	}
+	events, err := svc.GetUserEvents(userId)
+	if err != nil {
+		throw500Error(wtr)
+		return
+	}
+	json.NewEncoder(wtr).Encode(events)
+}
