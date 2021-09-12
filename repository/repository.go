@@ -10,6 +10,7 @@ type IRepository interface {
 	CreateUser(name, email, hashedPassword string) (string, error)
 	GetUserByEmail(email string) (entities.User, error)
 	CreateEvent(opts EventOpts) (string, error)
+	GetUserEvents(userId string) ([]entities.Event, error)
 }
 
 type EventOpts struct {
