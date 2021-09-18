@@ -9,11 +9,13 @@ import (
 type IRepository interface {
 	CreateUser(name, email, hashedPassword string) (string, error)
 	GetUserByEmail(email string) (entities.User, error)
-	CreateEvent(opts EventOpts) (string, error)
+	CreateEvent(params EventOpts) (string, error)
 	GetUserEvents(userId string) ([]entities.Event, error)
+	UpdateEvent(params EventOpts) error
 }
 
 type EventOpts struct {
+	Id        string
 	Date      string
 	StartTime string
 	EndTime   string
@@ -22,3 +24,4 @@ type EventOpts struct {
 }
 
 var ErrNoUsersFound = errors.New("repository error: no users found")
+var ErrNoEventsFound = errors.New("repository error: no events found")

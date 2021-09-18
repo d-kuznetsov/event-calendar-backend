@@ -159,3 +159,25 @@ func (repo *mongoRepo) GetUserEvents(userId string) ([]entities.Event, error) {
 
 	return events, err
 }
+
+func (repo *mongoRepo) UpdateEvent(params repository.EventOpts) error {
+	coll := repo.client.Database(repo.dbName).Collection("events")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	dbId, err := primitive.ObjectIDFromHex(params.Id)
+	if err != nil {
+		return err
+	}
+
+	_, err = coll.UpdateByID(ctx, dbId, bson.D{
+		{"$set", bson.M{
+			"date":      params.Date,
+			"startTime": params.StartTime,
+			"endTime":   params.EndTime,
+			"content":   params.Content,
+		}},
+	})
+
+	return err
+}

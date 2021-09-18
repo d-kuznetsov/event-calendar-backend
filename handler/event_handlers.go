@@ -39,3 +39,20 @@ func GetUserEventsHandler(wtr http.ResponseWriter, req *http.Request, svc servic
 	}
 	json.NewEncoder(wtr).Encode(events)
 }
+
+func UpdateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+	token := extractToken(req)
+	_, err := svc.ParseToken(token)
+	if err != nil {
+		throw401Error(wtr)
+		return
+	}
+	eventOpts := service.EventOpts{}
+	json.NewDecoder(req.Body).Decode(&eventOpts)
+	err = svc.UpdateEvent(eventOpts)
+	if err != nil {
+		throw500Error(wtr)
+		return
+	}
+	json.NewEncoder(wtr).Encode(true)
+}
