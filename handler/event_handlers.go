@@ -32,7 +32,17 @@ func GetUserEventsHandler(wtr http.ResponseWriter, req *http.Request, svc servic
 		throw401Error(wtr)
 		return
 	}
-	events, err := svc.GetUserEvents(userId)
+	req.ParseForm()
+	var body = struct {
+		PeriodStart string
+		PeriodEnd   string
+		UserId      string
+	}{
+		PeriodStart: req.Form["periodStart"][0],
+		PeriodEnd:   req.Form["periodEnd"][0],
+		UserId:      userId,
+	}
+	events, err := svc.GetUserEvents(body)
 	if err != nil {
 		throw500Error(wtr)
 		return

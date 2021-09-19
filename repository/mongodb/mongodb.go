@@ -135,13 +135,23 @@ func (repo *mongoRepo) CreateEvent(params repository.EventOpts) (string, error) 
 	return id.Hex(), err
 }
 
-func (repo *mongoRepo) GetUserEvents(userId string) ([]entities.Event, error) {
+func (repo *mongoRepo) GetUserEvents(params struct {
+	PeriodStart string
+	PeriodEnd   string
+	UserId      string
+}) ([]entities.Event, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	dbUserId, _ := primitive.ObjectIDFromHex(userId)
-	cursor, err := coll.Find(ctx, bson.M{"userid": dbUserId})
+	dbUserId, _ := primitive.ObjectIDFromHex(params.UserId)
+	cursor, err := coll.Find(ctx, bson.M{
+		"userid": dbUserId,
+		"date": bson.D{
+			{"$gte", params.PeriodStart},
+			{"$lte", params.PeriodEnd},
+		},
+	})
 	var events []entities.Event
 	if err != nil {
 		return events, err

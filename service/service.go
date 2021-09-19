@@ -13,7 +13,11 @@ type IService interface {
 	Register(name, email, password string) (string, error)
 	Login(email, password string) (entities.User, error)
 	CreateEvent(params EventOpts) (string, error)
-	GetUserEvents(userId string) ([]entities.Event, error)
+	GetUserEvents(params struct {
+		PeriodStart string
+		PeriodEnd   string
+		UserId      string
+	}) ([]entities.Event, error)
 	UpdateEvent(params EventOpts) error
 	DeleteEventById(id string) error
 }
@@ -71,8 +75,12 @@ func (service *Service) CreateEvent(params EventOpts) (string, error) {
 	return service.repository.CreateEvent(params)
 }
 
-func (service *Service) GetUserEvents(userId string) ([]entities.Event, error) {
-	return service.repository.GetUserEvents(userId)
+func (service *Service) GetUserEvents(params struct {
+	PeriodStart string
+	PeriodEnd   string
+	UserId      string
+}) ([]entities.Event, error) {
+	return service.repository.GetUserEvents(params)
 }
 
 func (service *Service) UpdateEvent(params EventOpts) error {

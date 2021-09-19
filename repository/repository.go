@@ -10,7 +10,11 @@ type IRepository interface {
 	CreateUser(name, email, hashedPassword string) (string, error)
 	GetUserByEmail(email string) (entities.User, error)
 	CreateEvent(params EventOpts) (string, error)
-	GetUserEvents(userId string) ([]entities.Event, error)
+	GetUserEvents(params struct {
+		PeriodStart string
+		PeriodEnd   string
+		UserId      string
+	}) ([]entities.Event, error)
 	UpdateEvent(params EventOpts) error
 	DeleteEventById(id string) error
 }
