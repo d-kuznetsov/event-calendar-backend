@@ -56,3 +56,20 @@ func UpdateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	}
 	json.NewEncoder(wtr).Encode(true)
 }
+
+func DeleteEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+	token := extractToken(req)
+	_, err := svc.ParseToken(token)
+	if err != nil {
+		throw401Error(wtr)
+		return
+	}
+	var opts struct{ Id string }
+	json.NewDecoder(req.Body).Decode(&opts)
+	err = svc.DeleteEventById(opts.Id)
+	if err != nil {
+		throw500Error(wtr)
+		return
+	}
+	json.NewEncoder(wtr).Encode(true)
+}

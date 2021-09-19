@@ -12,6 +12,7 @@ type IRepository interface {
 	CreateEvent(params EventOpts) (string, error)
 	GetUserEvents(userId string) ([]entities.Event, error)
 	UpdateEvent(params EventOpts) error
+	DeleteEventById(id string) error
 }
 
 type EventOpts struct {

@@ -181,3 +181,17 @@ func (repo *mongoRepo) UpdateEvent(params repository.EventOpts) error {
 
 	return err
 }
+
+func (repo *mongoRepo) DeleteEventById(id string) error {
+	coll := repo.client.Database(repo.dbName).Collection("events")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	dbId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return err
+	}
+
+	_, err = coll.DeleteOne(ctx, bson.M{"_id": dbId})
+	return err
+}

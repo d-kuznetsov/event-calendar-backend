@@ -28,6 +28,7 @@ func main() {
 	router.HandleFunc("/create-event", handler.CreateHttpHandler(handler.CreateEventHandler, svc)).Methods("POST")
 	router.HandleFunc("/user-events", handler.CreateHttpHandler(handler.GetUserEventsHandler, svc)).Methods("GET")
 	router.HandleFunc("/update-event", handler.CreateHttpHandler(handler.UpdateEventHandler, svc)).Methods("POST")
+	router.HandleFunc("/delete-event", handler.CreateHttpHandler(handler.DeleteEventHandler, svc)).Methods("POST")
 
 	http.ListenAndServe(":8080", corsHandler.Handler(router))
 }

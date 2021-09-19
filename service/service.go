@@ -15,6 +15,7 @@ type IService interface {
 	CreateEvent(params EventOpts) (string, error)
 	GetUserEvents(userId string) ([]entities.Event, error)
 	UpdateEvent(params EventOpts) error
+	DeleteEventById(id string) error
 }
 
 type EventOpts = repository.EventOpts
@@ -76,4 +77,8 @@ func (service *Service) GetUserEvents(userId string) ([]entities.Event, error) {
 
 func (service *Service) UpdateEvent(params EventOpts) error {
 	return service.repository.UpdateEvent(params)
+}
+
+func (service *Service) DeleteEventById(id string) error {
+	return service.repository.DeleteEventById(id)
 }
