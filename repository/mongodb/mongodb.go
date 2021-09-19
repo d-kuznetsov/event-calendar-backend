@@ -144,6 +144,9 @@ func (repo *mongoRepo) GetUserEvents(params struct {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
+	findOpts := options.Find()
+	findOpts.SetSort(bson.D{{"date", 1}, {"startTime", 1}})
+
 	dbUserId, _ := primitive.ObjectIDFromHex(params.UserId)
 	cursor, err := coll.Find(ctx, bson.M{
 		"userid": dbUserId,
@@ -151,7 +154,7 @@ func (repo *mongoRepo) GetUserEvents(params struct {
 			{"$gte", params.PeriodStart},
 			{"$lte", params.PeriodEnd},
 		},
-	})
+	}, findOpts)
 	var events []entities.Event
 	if err != nil {
 		return events, err
