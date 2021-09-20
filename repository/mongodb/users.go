@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -23,7 +22,7 @@ func toDtoUser(user dbUser) dto.User {
 
 func (repo *mongoRepo) CreateUser(userDto dto.User) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	user := dbUser{
@@ -42,7 +41,7 @@ func (repo *mongoRepo) CreateUser(userDto dto.User) (string, error) {
 
 func (repo *mongoRepo) GetUserByEmail(email string) (dto.User, error) {
 	coll := repo.client.Database(repo.dbName).Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	var user dbUser

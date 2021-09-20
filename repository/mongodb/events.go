@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -24,7 +23,7 @@ func toDtoEvent(event dbEvent) dto.Event {
 
 func (repo *mongoRepo) CreateEvent(eventData dto.Event) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	dbId, err := primitive.ObjectIDFromHex(eventData.UserId)
@@ -50,7 +49,7 @@ func (repo *mongoRepo) CreateEvent(eventData dto.Event) (string, error) {
 
 func (repo *mongoRepo) GetEvents(params dto.PeriodParams) ([]dto.Event, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	findOpts := options.Find()
@@ -84,7 +83,7 @@ func (repo *mongoRepo) GetEvents(params dto.PeriodParams) ([]dto.Event, error) {
 
 func (repo *mongoRepo) UpdateEvent(eventData dto.Event) error {
 	coll := repo.client.Database(repo.dbName).Collection("events")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	dbId, err := primitive.ObjectIDFromHex(eventData.Id)
@@ -106,7 +105,7 @@ func (repo *mongoRepo) UpdateEvent(eventData dto.Event) error {
 
 func (repo *mongoRepo) DeleteEvent(id string) error {
 	coll := repo.client.Database(repo.dbName).Collection("events")
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
 	dbId, err := primitive.ObjectIDFromHex(id)
