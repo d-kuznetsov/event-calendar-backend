@@ -26,7 +26,7 @@ func main() {
 	router.HandleFunc("/register", handler.CreateHttpHandler(handler.RegisterHandler, svc)).Methods("POST")
 	router.HandleFunc("/login", handler.CreateHttpHandler(handler.LoginHandler, svc)).Methods("POST")
 	router.HandleFunc("/create-event", handler.CreateHttpHandler(handler.CreateEventHandler, svc)).Methods("POST")
-	router.HandleFunc("/user-events", handler.CreateHttpHandler(handler.GetUserEventsHandler, svc)).Methods("GET")
+	router.HandleFunc("/user-events", handler.CreateHttpHandler(handler.GetEventsHandler, svc)).Methods("GET")
 	router.HandleFunc("/update-event", handler.CreateHttpHandler(handler.UpdateEventHandler, svc)).Methods("POST")
 	router.HandleFunc("/delete-event", handler.CreateHttpHandler(handler.DeleteEventHandler, svc)).Methods("POST")
 

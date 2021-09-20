@@ -26,7 +26,7 @@ func CreateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	wtr.Write([]byte(eventId))
 }
 
-func GetUserEventsHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func GetEventsHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
 	token := extractToken(req)
 	userId, err := svc.ParseToken(token)
 	if err != nil {
@@ -39,7 +39,7 @@ func GetUserEventsHandler(wtr http.ResponseWriter, req *http.Request, svc servic
 		PeriodEnd:   req.Form["periodEnd"][0],
 		UserId:      userId,
 	}
-	events, err := svc.GetUserEvents(body)
+	events, err := svc.GetEvents(body)
 	if err != nil {
 		throw500Error(wtr)
 		return
@@ -73,7 +73,7 @@ func DeleteEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	}
 	var eventData dto.Event
 	json.NewDecoder(req.Body).Decode(&eventData)
-	err = svc.DeleteEventById(eventData.Id)
+	err = svc.DeleteEvent(eventData.Id)
 	if err != nil {
 		throw500Error(wtr)
 		return

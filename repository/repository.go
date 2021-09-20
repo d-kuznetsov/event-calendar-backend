@@ -11,8 +11,8 @@ type IRepository interface {
 	GetUserByEmail(email string) (dto.User, error)
 	CreateEvent(eventData dto.Event) (string, error)
 	UpdateEvent(eventData dto.Event) error
-	DeleteEventById(id string) error
-	GetUserEvents(params dto.PeriodParams) ([]dto.Event, error)
+	DeleteEvent(id string) error
+	GetEvents(params dto.PeriodParams) ([]dto.Event, error)
 }
 
 type EventOpts struct {

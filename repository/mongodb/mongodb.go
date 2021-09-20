@@ -119,7 +119,7 @@ func (repo *mongoRepo) CreateEvent(eventData dto.Event) (string, error) {
 	return id.Hex(), err
 }
 
-func (repo *mongoRepo) GetUserEvents(params dto.PeriodParams) ([]dto.Event, error) {
+func (repo *mongoRepo) GetEvents(params dto.PeriodParams) ([]dto.Event, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -175,7 +175,7 @@ func (repo *mongoRepo) UpdateEvent(eventData dto.Event) error {
 	return err
 }
 
-func (repo *mongoRepo) DeleteEventById(id string) error {
+func (repo *mongoRepo) DeleteEvent(id string) error {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
