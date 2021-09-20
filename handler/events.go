@@ -8,7 +8,7 @@ import (
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
-func CreateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func CreateEvent(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
 	token := extractToken(req)
 	userId, err := svc.ParseToken(token)
 	if err != nil {
@@ -30,7 +30,7 @@ func CreateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	// wtr.WriteHeader(http.StatusNoContent)
 }
 
-func GetEventsHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func GetEvents(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
 	token := extractToken(req)
 	userId, err := svc.ParseToken(token)
 	if err != nil {
@@ -53,7 +53,7 @@ func GetEventsHandler(wtr http.ResponseWriter, req *http.Request, svc service.IS
 	json.NewEncoder(wtr).Encode(events)
 }
 
-func UpdateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func UpdateEvent(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
 	token := extractToken(req)
 	_, err := svc.ParseToken(token)
 	if err != nil {
@@ -74,7 +74,7 @@ func UpdateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	// wtr.WriteHeader(http.StatusNoContent)
 }
 
-func DeleteEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func DeleteEvent(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
 	token := extractToken(req)
 	_, err := svc.ParseToken(token)
 	if err != nil {

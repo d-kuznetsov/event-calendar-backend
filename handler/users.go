@@ -8,7 +8,7 @@ import (
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
-func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func Register(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
 	var userData dto.User
 	json.NewDecoder(req.Body).Decode(&userData)
 
@@ -35,7 +35,7 @@ func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.ISe
 	})
 }
 
-func LoginHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func Login(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
 	var userData dto.User
 	json.NewDecoder(req.Body).Decode(&userData)
 
