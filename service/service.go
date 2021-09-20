@@ -11,7 +11,7 @@ type IService interface {
 	CreateToken(id string) (string, error)
 	ParseToken(token string) (string, error)
 	Register(userData dto.User) (string, error)
-	Login(email, password string) (dto.User, error)
+	Login(userData dto.User) (dto.User, error)
 	CreateEvent(params EventOpts) (string, error)
 	GetUserEvents(params struct {
 		PeriodStart string
@@ -58,17 +58,17 @@ func (service *Service) Register(userData dto.User) (string, error) {
 	return userId, err
 }
 
-func (service *Service) Login(email, password string) (dto.User, error) {
-	user, err := service.repository.GetUserByEmail(email)
+func (service *Service) Login(userData dto.User) (dto.User, error) {
+	applicant, err := service.repository.GetUserByEmail(userData.Email)
 	if err == repository.ErrNoUsersFound {
 		return dto.User{}, ErrUserDoesNotExist
 	} else if err != nil {
 		return dto.User{}, err
 	}
-	if user.Password != password {
+	if applicant.Password != userData.Password {
 		return dto.User{}, ErrUserDoesNotExist
 	}
-	return user, err
+	return applicant, err
 }
 
 func (service *Service) CreateEvent(params EventOpts) (string, error) {

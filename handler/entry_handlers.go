@@ -32,9 +32,9 @@ func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.ISe
 }
 
 func LoginHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
-	var loginData Credentials
-	json.NewDecoder(req.Body).Decode(&loginData)
-	user, err := svc.Login(loginData.Email, loginData.Password)
+	var userData dto.User
+	json.NewDecoder(req.Body).Decode(&userData)
+	user, err := svc.Login(userData)
 	if err == service.ErrUserDoesNotExist {
 		throw400Error(wtr, "Incorrect email or password")
 		return
