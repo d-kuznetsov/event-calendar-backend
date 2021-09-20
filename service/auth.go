@@ -8,6 +8,14 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+func (service *Service) CreateToken(id string) (string, error) {
+	return generateToken(id)
+}
+
+func (service *Service) ParseToken(token string) (string, error) {
+	return parseToken(token)
+}
+
 var signingKey = "test_key"
 
 const tokenTTL = 12 * time.Hour
