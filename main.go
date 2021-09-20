@@ -23,12 +23,12 @@ func main() {
 		AllowedHeaders:   []string{"*"},
 		Debug:            true,
 	})
-	router.HandleFunc("/register", handler.CreateHttpHandler(handler.RegisterHandler, svc)).Methods("POST")
-	router.HandleFunc("/login", handler.CreateHttpHandler(handler.LoginHandler, svc)).Methods("POST")
-	router.HandleFunc("/create-event", handler.CreateHttpHandler(handler.CreateEventHandler, svc)).Methods("POST")
-	router.HandleFunc("/user-events", handler.CreateHttpHandler(handler.GetEventsHandler, svc)).Methods("GET")
-	router.HandleFunc("/update-event", handler.CreateHttpHandler(handler.UpdateEventHandler, svc)).Methods("POST")
-	router.HandleFunc("/delete-event", handler.CreateHttpHandler(handler.DeleteEventHandler, svc)).Methods("POST")
+	router.HandleFunc("/register", handler.CreateHandler(handler.RegisterHandler, svc)).Methods("POST")
+	router.HandleFunc("/login", handler.CreateHandler(handler.LoginHandler, svc)).Methods("POST")
+	router.HandleFunc("/create-event", handler.CreateHandler(handler.CreateEventHandler, svc)).Methods("POST")
+	router.HandleFunc("/user-events", handler.CreateHandler(handler.GetEventsHandler, svc)).Methods("GET")
+	router.HandleFunc("/update-event", handler.CreateHandler(handler.UpdateEventHandler, svc)).Methods("POST")
+	router.HandleFunc("/delete-event", handler.CreateHandler(handler.DeleteEventHandler, svc)).Methods("POST")
 
 	http.ListenAndServe(":8080", corsHandler.Handler(router))
 }

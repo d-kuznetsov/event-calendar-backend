@@ -12,7 +12,7 @@ func CreateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	token := extractToken(req)
 	userId, err := svc.ParseToken(token)
 	if err != nil {
-		throw401Error(wtr)
+		throwUnauthorizedErr(wtr)
 		return
 	}
 	var eventData dto.Event
@@ -20,7 +20,7 @@ func CreateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	eventData.UserId = userId
 	eventId, err := svc.CreateEvent(eventData)
 	if err != nil {
-		throw500Error(wtr)
+		throwIntServerErr(wtr)
 		return
 	}
 	wtr.Write([]byte(eventId))
@@ -30,7 +30,7 @@ func GetEventsHandler(wtr http.ResponseWriter, req *http.Request, svc service.IS
 	token := extractToken(req)
 	userId, err := svc.ParseToken(token)
 	if err != nil {
-		throw401Error(wtr)
+		throwUnauthorizedErr(wtr)
 		return
 	}
 	req.ParseForm()
@@ -41,7 +41,7 @@ func GetEventsHandler(wtr http.ResponseWriter, req *http.Request, svc service.IS
 	}
 	events, err := svc.GetEvents(body)
 	if err != nil {
-		throw500Error(wtr)
+		throwIntServerErr(wtr)
 		return
 	}
 	json.NewEncoder(wtr).Encode(events)
@@ -51,14 +51,14 @@ func UpdateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	token := extractToken(req)
 	_, err := svc.ParseToken(token)
 	if err != nil {
-		throw401Error(wtr)
+		throwUnauthorizedErr(wtr)
 		return
 	}
 	var eventData dto.Event
 	json.NewDecoder(req.Body).Decode(&eventData)
 	err = svc.UpdateEvent(eventData)
 	if err != nil {
-		throw500Error(wtr)
+		throwIntServerErr(wtr)
 		return
 	}
 	json.NewEncoder(wtr).Encode(true)
@@ -68,14 +68,14 @@ func DeleteEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 	token := extractToken(req)
 	_, err := svc.ParseToken(token)
 	if err != nil {
-		throw401Error(wtr)
+		throwUnauthorizedErr(wtr)
 		return
 	}
 	var eventData dto.Event
 	json.NewDecoder(req.Body).Decode(&eventData)
 	err = svc.DeleteEvent(eventData.Id)
 	if err != nil {
-		throw500Error(wtr)
+		throwIntServerErr(wtr)
 		return
 	}
 	json.NewEncoder(wtr).Encode(true)
