@@ -11,6 +11,10 @@ import (
 func (hdlr *handler) Register(wtr http.ResponseWriter, req *http.Request) {
 	var userData dto.User
 	json.NewDecoder(req.Body).Decode(&userData)
+	if userData.Name == "" || userData.Password == "" || !isEmailValid(userData.Email) {
+		throwBadReqErr(wtr, "Incorrect data")
+		return
+	}
 
 	userId, err := hdlr.service.Register(userData)
 	if err == service.ErrUserAlreadyExists {
@@ -38,6 +42,10 @@ func (hdlr *handler) Register(wtr http.ResponseWriter, req *http.Request) {
 func (hdlr *handler) Login(wtr http.ResponseWriter, req *http.Request) {
 	var userData dto.User
 	json.NewDecoder(req.Body).Decode(&userData)
+	if userData.Email == "" || userData.Password == "" {
+		throwBadReqErr(wtr, "Incorrect data")
+		return
+	}
 
 	user, err := hdlr.service.Login(userData)
 	if err == service.ErrUserDoesNotExist {
