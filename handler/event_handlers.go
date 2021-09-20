@@ -34,11 +34,7 @@ func GetUserEventsHandler(wtr http.ResponseWriter, req *http.Request, svc servic
 		return
 	}
 	req.ParseForm()
-	var body = struct {
-		PeriodStart string
-		PeriodEnd   string
-		UserId      string
-	}{
+	body := dto.PeriodParams{
 		PeriodStart: req.Form["periodStart"][0],
 		PeriodEnd:   req.Form["periodEnd"][0],
 		UserId:      userId,

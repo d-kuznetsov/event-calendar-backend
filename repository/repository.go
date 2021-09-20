@@ -12,11 +12,7 @@ type IRepository interface {
 	CreateEvent(eventData dto.Event) (string, error)
 	UpdateEvent(eventData dto.Event) error
 	DeleteEventById(id string) error
-	GetUserEvents(params struct {
-		PeriodStart string
-		PeriodEnd   string
-		UserId      string
-	}) ([]dto.Event, error)
+	GetUserEvents(params dto.PeriodParams) ([]dto.Event, error)
 }
 
 type EventOpts struct {

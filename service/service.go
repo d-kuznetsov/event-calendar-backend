@@ -15,11 +15,7 @@ type IService interface {
 	CreateEvent(eventData dto.Event) (string, error)
 	UpdateEvent(eventData dto.Event) error
 	DeleteEventById(id string) error
-	GetUserEvents(params struct {
-		PeriodStart string
-		PeriodEnd   string
-		UserId      string
-	}) ([]dto.Event, error)
+	GetUserEvents(params dto.PeriodParams) ([]dto.Event, error)
 }
 
 type EventOpts = repository.EventOpts
@@ -75,11 +71,7 @@ func (service *Service) CreateEvent(eventData dto.Event) (string, error) {
 	return service.repository.CreateEvent(eventData)
 }
 
-func (service *Service) GetUserEvents(params struct {
-	PeriodStart string
-	PeriodEnd   string
-	UserId      string
-}) ([]dto.Event, error) {
+func (service *Service) GetUserEvents(params dto.PeriodParams) ([]dto.Event, error) {
 	return service.repository.GetUserEvents(params)
 }
 

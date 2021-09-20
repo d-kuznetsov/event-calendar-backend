@@ -119,11 +119,7 @@ func (repo *mongoRepo) CreateEvent(eventData dto.Event) (string, error) {
 	return id.Hex(), err
 }
 
-func (repo *mongoRepo) GetUserEvents(params struct {
-	PeriodStart string
-	PeriodEnd   string
-	UserId      string
-}) ([]dto.Event, error) {
+func (repo *mongoRepo) GetUserEvents(params dto.PeriodParams) ([]dto.Event, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

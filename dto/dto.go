@@ -15,3 +15,9 @@ type Event struct {
 	Content   string `json:"content"`
 	UserId    string `json:"userId"`
 }
+
+type PeriodParams struct {
+	PeriodStart string `json:"periodStart"`
+	PeriodEnd   string `json:"periodEnd"`
+	UserId      string `json:"userId"`
+}
