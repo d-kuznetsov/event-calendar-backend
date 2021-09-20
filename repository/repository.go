@@ -3,18 +3,18 @@ package repository
 import (
 	"errors"
 
-	"github.com/d-kuznetsov/calendar-backend/entities"
+	"github.com/d-kuznetsov/calendar-backend/dto"
 )
 
 type IRepository interface {
 	CreateUser(name, email, hashedPassword string) (string, error)
-	GetUserByEmail(email string) (entities.User, error)
+	GetUserByEmail(email string) (dto.User, error)
 	CreateEvent(params EventOpts) (string, error)
 	GetUserEvents(params struct {
 		PeriodStart string
 		PeriodEnd   string
 		UserId      string
-	}) ([]entities.Event, error)
+	}) ([]dto.Event, error)
 	UpdateEvent(params EventOpts) error
 	DeleteEventById(id string) error
 }

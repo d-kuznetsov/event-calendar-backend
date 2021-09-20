@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 
-	"github.com/d-kuznetsov/calendar-backend/entities"
+	"github.com/d-kuznetsov/calendar-backend/dto"
 	"github.com/d-kuznetsov/calendar-backend/repository"
 )
 
@@ -11,13 +11,13 @@ type IService interface {
 	CreateToken(id string) (string, error)
 	ParseToken(token string) (string, error)
 	Register(name, email, password string) (string, error)
-	Login(email, password string) (entities.User, error)
+	Login(email, password string) (dto.User, error)
 	CreateEvent(params EventOpts) (string, error)
 	GetUserEvents(params struct {
 		PeriodStart string
 		PeriodEnd   string
 		UserId      string
-	}) ([]entities.Event, error)
+	}) ([]dto.Event, error)
 	UpdateEvent(params EventOpts) error
 	DeleteEventById(id string) error
 }
@@ -58,15 +58,15 @@ func (service *Service) Register(name, email, password string) (string, error) {
 	return userId, err
 }
 
-func (service *Service) Login(email, password string) (entities.User, error) {
+func (service *Service) Login(email, password string) (dto.User, error) {
 	user, err := service.repository.GetUserByEmail(email)
 	if err == repository.ErrNoUsersFound {
-		return entities.User{}, ErrUserDoesNotExist
+		return dto.User{}, ErrUserDoesNotExist
 	} else if err != nil {
-		return entities.User{}, err
+		return dto.User{}, err
 	}
 	if user.Password != password {
-		return entities.User{}, ErrUserDoesNotExist
+		return dto.User{}, ErrUserDoesNotExist
 	}
 	return user, err
 }
@@ -79,7 +79,7 @@ func (service *Service) GetUserEvents(params struct {
 	PeriodStart string
 	PeriodEnd   string
 	UserId      string
-}) ([]entities.Event, error) {
+}) ([]dto.Event, error) {
 	return service.repository.GetUserEvents(params)
 }
 

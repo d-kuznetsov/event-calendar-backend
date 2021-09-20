@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/d-kuznetsov/calendar-backend/entities"
+	"github.com/d-kuznetsov/calendar-backend/dto"
 	"github.com/d-kuznetsov/calendar-backend/repository"
 )
 
@@ -47,8 +47,8 @@ func CreateRepository(client *mongo.Client, dbName string) repository.IRepositor
 	}
 }
 
-func toModelUser(user dbUser) entities.User {
-	return entities.User{
+func toModelUser(user dbUser) dto.User {
+	return dto.User{
 		Id:       user.Id.Hex(),
 		Name:     user.Name,
 		Email:    user.Email,
@@ -73,20 +73,20 @@ func (repo *mongoRepo) CreateUser(name, email, hashedPassword string) (string, e
 	return id.Hex(), err
 }
 
-func (repo *mongoRepo) GetUserByEmail(email string) (entities.User, error) {
+func (repo *mongoRepo) GetUserByEmail(email string) (dto.User, error) {
 	var user dbUser
 	collection := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	err := collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
 	if err == mongo.ErrNoDocuments {
-		return entities.User{}, repository.ErrNoUsersFound
+		return dto.User{}, repository.ErrNoUsersFound
 	}
 	return toModelUser(user), err
 }
 
-func toEntityEvent(event dbEvent) entities.Event {
-	return entities.Event{
+func toEntityEvent(event dbEvent) dto.Event {
+	return dto.Event{
 		Id:        event.Id.Hex(),
 		Date:      event.Date,
 		StartTime: event.StartTime,
@@ -123,7 +123,7 @@ func (repo *mongoRepo) GetUserEvents(params struct {
 	PeriodStart string
 	PeriodEnd   string
 	UserId      string
-}) ([]entities.Event, error) {
+}) ([]dto.Event, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -139,7 +139,7 @@ func (repo *mongoRepo) GetUserEvents(params struct {
 			{"$lte", params.PeriodEnd},
 		},
 	}, findOpts)
-	var events []entities.Event
+	var events []dto.Event
 	if err != nil {
 		return events, err
 	}
