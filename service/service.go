@@ -18,8 +18,6 @@ type IService interface {
 	GetEvents(params dto.PeriodParams) ([]dto.Event, error)
 }
 
-type EventOpts = repository.EventOpts
-
 var ErrUserAlreadyExists = errors.New("service error: user already exists")
 var ErrUserDoesNotExist = errors.New("service error: user does not exist")
 
