@@ -47,13 +47,6 @@ func CreateRepository(client *mongo.Client, dbName string) repository.IRepositor
 	}
 }
 
-type dbUser struct {
-	Id       primitive.ObjectID `bson:"_id,omitempty"`
-	Name     string             `bson:"name"`
-	Email    string             `bson:"email"`
-	Password string             `bson:"password"`
-}
-
 func toModelUser(user dbUser) entities.User {
 	return entities.User{
 		Id:       user.Id.Hex(),
@@ -90,15 +83,6 @@ func (repo *mongoRepo) GetUserByEmail(email string) (entities.User, error) {
 		return entities.User{}, repository.ErrNoUsersFound
 	}
 	return toModelUser(user), err
-}
-
-type dbEvent struct {
-	Id        primitive.ObjectID `bson:"_id,omitempty"`
-	Date      string             `json:"date"`
-	StartTime string             `json:"startTime"`
-	EndTime   string             `json:"endTime"`
-	Content   string             `json:"content"`
-	UserId    primitive.ObjectID `json:"userId"`
 }
 
 func toEntityEvent(event dbEvent) entities.Event {
