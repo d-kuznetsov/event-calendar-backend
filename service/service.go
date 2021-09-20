@@ -20,6 +20,7 @@ type IService interface {
 
 var ErrUserAlreadyExists = errors.New("service error: user already exists")
 var ErrUserDoesNotExist = errors.New("service error: user does not exist")
+var ErrIncorrectData = errors.New("service error: incorrect data")
 
 type Service struct {
 	repository repository.IRepository

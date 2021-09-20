@@ -1,11 +1,17 @@
 package service
 
 import (
+	"net/mail"
+
 	"github.com/d-kuznetsov/calendar-backend/dto"
 	"github.com/d-kuznetsov/calendar-backend/repository"
 )
 
 func (service *Service) Register(userData dto.User) (string, error) {
+	if userData.Name == "" || userData.Password == "" || !isEmailValid(userData.Email) {
+		return "", ErrIncorrectData
+	}
+
 	_, err := service.repository.GetUserByEmail(userData.Email)
 	if err == nil {
 		return "", ErrUserAlreadyExists
@@ -19,6 +25,10 @@ func (service *Service) Register(userData dto.User) (string, error) {
 }
 
 func (service *Service) Login(userData dto.User) (dto.User, error) {
+	if userData.Email == "" || userData.Password == "" {
+		return dto.User{}, ErrIncorrectData
+	}
+
 	applicant, err := service.repository.GetUserByEmail(userData.Email)
 	if err == repository.ErrNoUsersFound {
 		return dto.User{}, ErrUserDoesNotExist
@@ -29,4 +39,9 @@ func (service *Service) Login(userData dto.User) (dto.User, error) {
 		return dto.User{}, ErrUserDoesNotExist
 	}
 	return applicant, err
+}
+
+func isEmailValid(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }

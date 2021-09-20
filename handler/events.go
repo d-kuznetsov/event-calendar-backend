@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/d-kuznetsov/calendar-backend/dto"
+	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
 func (hdlr *handler) CreateEvent(wtr http.ResponseWriter, req *http.Request) {
@@ -17,19 +18,13 @@ func (hdlr *handler) CreateEvent(wtr http.ResponseWriter, req *http.Request) {
 
 	var eventData dto.Event
 	json.NewDecoder(req.Body).Decode(&eventData)
-
-	if !isDateValid(eventData.Date) ||
-		!isTimeValid(eventData.StartTime) ||
-		!isTimeValid(eventData.EndTime) ||
-		eventData.StartTime > eventData.EndTime ||
-		eventData.Content == "" {
-		throwBadReqErr(wtr, "Incorrect data")
-		return
-	}
-
 	eventData.UserId = userId
+
 	eventId, err := hdlr.service.CreateEvent(eventData)
-	if err != nil {
+	if err == service.ErrIncorrectData {
+		throwBadReqErr(wtr, err.Error())
+		return
+	} else if err != nil {
 		throwIntServerErr(wtr)
 		return
 	}
@@ -53,16 +48,11 @@ func (hdlr *handler) GetEvents(wtr http.ResponseWriter, req *http.Request) {
 		UserId:      userId,
 	}
 
-	if !isDateValid(periodParams.PeriodStart) ||
-		!isDateValid(periodParams.PeriodEnd) ||
-		periodParams.PeriodStart > periodParams.PeriodEnd ||
-		periodParams.UserId == "" {
-		throwBadReqErr(wtr, "Incorrect data")
-		return
-	}
-
 	events, err := hdlr.service.GetEvents(periodParams)
-	if err != nil {
+	if err == service.ErrIncorrectData {
+		throwBadReqErr(wtr, err.Error())
+		return
+	} else if err != nil {
 		throwIntServerErr(wtr)
 		return
 	}
@@ -81,18 +71,11 @@ func (hdlr *handler) UpdateEvent(wtr http.ResponseWriter, req *http.Request) {
 	var eventData dto.Event
 	json.NewDecoder(req.Body).Decode(&eventData)
 
-	if eventData.Id == "" ||
-		!isDateValid(eventData.Date) ||
-		!isTimeValid(eventData.StartTime) ||
-		!isTimeValid(eventData.EndTime) ||
-		eventData.StartTime > eventData.EndTime ||
-		eventData.Content == "" {
-		throwBadReqErr(wtr, "Incorrect data")
-		return
-	}
-
 	err = hdlr.service.UpdateEvent(eventData)
-	if err != nil {
+	if err == service.ErrIncorrectData {
+		throwBadReqErr(wtr, err.Error())
+		return
+	} else if err != nil {
 		throwIntServerErr(wtr)
 		return
 	}
@@ -112,13 +95,11 @@ func (hdlr *handler) DeleteEvent(wtr http.ResponseWriter, req *http.Request) {
 	var eventData dto.Event
 	json.NewDecoder(req.Body).Decode(&eventData)
 
-	if eventData.Id == "" {
-		throwBadReqErr(wtr, "Incorrect data")
-		return
-	}
-
 	err = hdlr.service.DeleteEvent(eventData.Id)
-	if err != nil {
+	if err == service.ErrIncorrectData {
+		throwBadReqErr(wtr, err.Error())
+		return
+	} else if err != nil {
 		throwIntServerErr(wtr)
 		return
 	}
