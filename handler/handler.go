@@ -6,11 +6,13 @@ import (
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
-type HandlerFunc = func(wtr http.ResponseWriter, req *http.Request, svc service.IService)
+type handler struct {
+	service service.IService
+}
 
-func CreateHandler(handlFun HandlerFunc, svc service.IService) http.HandlerFunc {
-	return func(wtr http.ResponseWriter, req *http.Request) {
-		handlFun(wtr, req, svc)
+func CreateHandler(svc service.IService) handler {
+	return handler{
+		service: svc,
 	}
 }
 

@@ -8,11 +8,11 @@ import (
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
-func Register(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func (hdlr *handler) Register(wtr http.ResponseWriter, req *http.Request) {
 	var userData dto.User
 	json.NewDecoder(req.Body).Decode(&userData)
 
-	userId, err := svc.Register(userData)
+	userId, err := hdlr.service.Register(userData)
 	if err == service.ErrUserAlreadyExists {
 		throwBadReqErr(wtr, "User with this email already exists")
 		return
@@ -21,7 +21,7 @@ func Register(wtr http.ResponseWriter, req *http.Request, svc service.IService) 
 		return
 	}
 
-	token, err := svc.CreateToken(userId)
+	token, err := hdlr.service.CreateToken(userId)
 	if err != nil {
 		throwIntServerErr(wtr)
 		return
@@ -35,11 +35,11 @@ func Register(wtr http.ResponseWriter, req *http.Request, svc service.IService) 
 	})
 }
 
-func Login(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func (hdlr *handler) Login(wtr http.ResponseWriter, req *http.Request) {
 	var userData dto.User
 	json.NewDecoder(req.Body).Decode(&userData)
 
-	user, err := svc.Login(userData)
+	user, err := hdlr.service.Login(userData)
 	if err == service.ErrUserDoesNotExist {
 		throwBadReqErr(wtr, "Incorrect email or password")
 		return
@@ -48,7 +48,7 @@ func Login(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
 		return
 	}
 
-	token, err := svc.CreateToken(user.Id)
+	token, err := hdlr.service.CreateToken(user.Id)
 	if err != nil {
 		throwIntServerErr(wtr)
 		return

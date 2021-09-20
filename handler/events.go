@@ -5,12 +5,11 @@ import (
 	"net/http"
 
 	"github.com/d-kuznetsov/calendar-backend/dto"
-	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
-func CreateEvent(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func (hdlr *handler) CreateEvent(wtr http.ResponseWriter, req *http.Request) {
 	token := extractToken(req)
-	userId, err := svc.ParseToken(token)
+	userId, err := hdlr.service.ParseToken(token)
 	if err != nil {
 		throwUnauthorizedErr(wtr)
 		return
@@ -20,7 +19,7 @@ func CreateEvent(wtr http.ResponseWriter, req *http.Request, svc service.IServic
 	json.NewDecoder(req.Body).Decode(&eventData)
 	eventData.UserId = userId
 
-	eventId, err := svc.CreateEvent(eventData)
+	eventId, err := hdlr.service.CreateEvent(eventData)
 	if err != nil {
 		throwIntServerErr(wtr)
 		return
@@ -30,9 +29,9 @@ func CreateEvent(wtr http.ResponseWriter, req *http.Request, svc service.IServic
 	// wtr.WriteHeader(http.StatusNoContent)
 }
 
-func GetEvents(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func (hdlr *handler) GetEvents(wtr http.ResponseWriter, req *http.Request) {
 	token := extractToken(req)
-	userId, err := svc.ParseToken(token)
+	userId, err := hdlr.service.ParseToken(token)
 	if err != nil {
 		throwUnauthorizedErr(wtr)
 		return
@@ -44,7 +43,7 @@ func GetEvents(wtr http.ResponseWriter, req *http.Request, svc service.IService)
 		PeriodEnd:   req.Form["periodEnd"][0],
 		UserId:      userId,
 	}
-	events, err := svc.GetEvents(periodParams)
+	events, err := hdlr.service.GetEvents(periodParams)
 	if err != nil {
 		throwIntServerErr(wtr)
 		return
@@ -53,9 +52,9 @@ func GetEvents(wtr http.ResponseWriter, req *http.Request, svc service.IService)
 	json.NewEncoder(wtr).Encode(events)
 }
 
-func UpdateEvent(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func (hdlr *handler) UpdateEvent(wtr http.ResponseWriter, req *http.Request) {
 	token := extractToken(req)
-	_, err := svc.ParseToken(token)
+	_, err := hdlr.service.ParseToken(token)
 	if err != nil {
 		throwUnauthorizedErr(wtr)
 		return
@@ -64,7 +63,7 @@ func UpdateEvent(wtr http.ResponseWriter, req *http.Request, svc service.IServic
 	var eventData dto.Event
 	json.NewDecoder(req.Body).Decode(&eventData)
 
-	err = svc.UpdateEvent(eventData)
+	err = hdlr.service.UpdateEvent(eventData)
 	if err != nil {
 		throwIntServerErr(wtr)
 		return
@@ -74,9 +73,9 @@ func UpdateEvent(wtr http.ResponseWriter, req *http.Request, svc service.IServic
 	// wtr.WriteHeader(http.StatusNoContent)
 }
 
-func DeleteEvent(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
+func (hdlr *handler) DeleteEvent(wtr http.ResponseWriter, req *http.Request) {
 	token := extractToken(req)
-	_, err := svc.ParseToken(token)
+	_, err := hdlr.service.ParseToken(token)
 	if err != nil {
 		throwUnauthorizedErr(wtr)
 		return
@@ -85,7 +84,7 @@ func DeleteEvent(wtr http.ResponseWriter, req *http.Request, svc service.IServic
 	var eventData dto.Event
 	json.NewDecoder(req.Body).Decode(&eventData)
 
-	err = svc.DeleteEvent(eventData.Id)
+	err = hdlr.service.DeleteEvent(eventData.Id)
 	if err != nil {
 		throwIntServerErr(wtr)
 		return

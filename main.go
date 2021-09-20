@@ -15,6 +15,7 @@ func main() {
 	client := mongodb.CreateClient("mongodb://localhost:27017")
 	repo := mongodb.CreateRepository(client, "calendar")
 	svc := service.CreateService(repo)
+	hdlr := handler.CreateHandler(svc)
 
 	router := mux.NewRouter()
 	corsHandler := cors.New(cors.Options{
@@ -23,12 +24,12 @@ func main() {
 		AllowedHeaders:   []string{"*"},
 		Debug:            true,
 	})
-	router.HandleFunc("/register", handler.CreateHandler(handler.Register, svc)).Methods("POST")
-	router.HandleFunc("/login", handler.CreateHandler(handler.Login, svc)).Methods("POST")
-	router.HandleFunc("/create-event", handler.CreateHandler(handler.CreateEvent, svc)).Methods("POST")
-	router.HandleFunc("/user-events", handler.CreateHandler(handler.GetEvents, svc)).Methods("GET")
-	router.HandleFunc("/update-event", handler.CreateHandler(handler.UpdateEvent, svc)).Methods("POST")
-	router.HandleFunc("/delete-event", handler.CreateHandler(handler.DeleteEvent, svc)).Methods("POST")
+	router.HandleFunc("/register", hdlr.Register).Methods("POST")
+	router.HandleFunc("/login", hdlr.Login).Methods("POST")
+	router.HandleFunc("/create-event", hdlr.CreateEvent).Methods("POST")
+	router.HandleFunc("/update-event", hdlr.UpdateEvent).Methods("POST")
+	router.HandleFunc("/delete-event", hdlr.DeleteEvent).Methods("POST")
+	router.HandleFunc("/user-events", hdlr.GetEvents).Methods("GET")
 
 	http.ListenAndServe(":8080", corsHandler.Handler(router))
 }
