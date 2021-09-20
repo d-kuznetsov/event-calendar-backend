@@ -47,7 +47,7 @@ func CreateRepository(client *mongo.Client, dbName string) repository.IRepositor
 	}
 }
 
-func toModelUser(user dbUser) dto.User {
+func toDtoUser(user dbUser) dto.User {
 	return dto.User{
 		Id:       user.Id.Hex(),
 		Name:     user.Name,
@@ -82,10 +82,10 @@ func (repo *mongoRepo) GetUserByEmail(email string) (dto.User, error) {
 	if err == mongo.ErrNoDocuments {
 		return dto.User{}, repository.ErrNoUsersFound
 	}
-	return toModelUser(user), err
+	return toDtoUser(user), err
 }
 
-func toEntityEvent(event dbEvent) dto.Event {
+func toDtoEvent(event dbEvent) dto.Event {
 	return dto.Event{
 		Id:        event.Id.Hex(),
 		Date:      event.Date,
@@ -147,7 +147,7 @@ func (repo *mongoRepo) GetEvents(params dto.PeriodParams) ([]dto.Event, error) {
 		if err != nil {
 			return events, err
 		}
-		events = append(events, toEntityEvent(e))
+		events = append(events, toDtoEvent(e))
 	}
 
 	return events, err
