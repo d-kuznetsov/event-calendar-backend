@@ -56,14 +56,14 @@ func toModelUser(user dbUser) dto.User {
 	}
 }
 
-func (repo *mongoRepo) CreateUser(name, email, hashedPassword string) (string, error) {
+func (repo *mongoRepo) CreateUser(userDto dto.User) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	user := dbUser{
-		Name:     name,
-		Email:    email,
-		Password: hashedPassword,
+		Name:     userDto.Name,
+		Email:    userDto.Email,
+		Password: userDto.Password,
 	}
 	res, err := coll.InsertOne(ctx, user)
 	if err != nil {

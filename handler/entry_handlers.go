@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/d-kuznetsov/calendar-backend/dto"
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
 func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.IService) {
-	var regData Credentials
-	json.NewDecoder(req.Body).Decode(&regData)
-	userId, err := svc.Register(regData.Name, regData.Email, regData.Password)
+	var userData dto.User
+	json.NewDecoder(req.Body).Decode(&userData)
+	userId, err := svc.Register(userData)
 	if err == service.ErrUserAlreadyExists {
 		throw400Error(wtr, "User with this email already exists")
 		return
@@ -25,7 +26,7 @@ func RegisterHandler(wtr http.ResponseWriter, req *http.Request, svc service.ISe
 	}
 	resData := responseData{
 		Token: token,
-		Name:  regData.Name,
+		Name:  userData.Name,
 	}
 	json.NewEncoder(wtr).Encode(resData)
 }

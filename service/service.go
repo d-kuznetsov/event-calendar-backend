@@ -10,7 +10,7 @@ import (
 type IService interface {
 	CreateToken(id string) (string, error)
 	ParseToken(token string) (string, error)
-	Register(name, email, password string) (string, error)
+	Register(userData dto.User) (string, error)
 	Login(email, password string) (dto.User, error)
 	CreateEvent(params EventOpts) (string, error)
 	GetUserEvents(params struct {
@@ -43,15 +43,15 @@ func (service *Service) ParseToken(token string) (string, error) {
 	return parseToken(token)
 }
 
-func (service *Service) Register(name, email, password string) (string, error) {
-	_, err := service.repository.GetUserByEmail(email)
+func (service *Service) Register(userData dto.User) (string, error) {
+	_, err := service.repository.GetUserByEmail(userData.Email)
 	if err == nil {
 		return "", ErrUserAlreadyExists
 	}
 	if err != nil && err != repository.ErrNoUsersFound {
 		return "", err
 	}
-	userId, err := service.repository.CreateUser(name, email, password)
+	userId, err := service.repository.CreateUser(userData)
 	if err != nil {
 		return "", err
 	}

@@ -7,7 +7,7 @@ import (
 )
 
 type IRepository interface {
-	CreateUser(name, email, hashedPassword string) (string, error)
+	CreateUser(userData dto.User) (string, error)
 	GetUserByEmail(email string) (dto.User, error)
 	CreateEvent(params EventOpts) (string, error)
 	GetUserEvents(params struct {
