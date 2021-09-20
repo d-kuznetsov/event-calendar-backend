@@ -12,14 +12,14 @@ type IService interface {
 	ParseToken(token string) (string, error)
 	Register(userData dto.User) (string, error)
 	Login(userData dto.User) (dto.User, error)
-	CreateEvent(params EventOpts) (string, error)
+	CreateEvent(eventData dto.Event) (string, error)
+	UpdateEvent(eventData dto.Event) error
+	DeleteEventById(id string) error
 	GetUserEvents(params struct {
 		PeriodStart string
 		PeriodEnd   string
 		UserId      string
 	}) ([]dto.Event, error)
-	UpdateEvent(params EventOpts) error
-	DeleteEventById(id string) error
 }
 
 type EventOpts = repository.EventOpts
@@ -71,8 +71,8 @@ func (service *Service) Login(userData dto.User) (dto.User, error) {
 	return applicant, err
 }
 
-func (service *Service) CreateEvent(params EventOpts) (string, error) {
-	return service.repository.CreateEvent(params)
+func (service *Service) CreateEvent(eventData dto.Event) (string, error) {
+	return service.repository.CreateEvent(eventData)
 }
 
 func (service *Service) GetUserEvents(params struct {
@@ -83,8 +83,8 @@ func (service *Service) GetUserEvents(params struct {
 	return service.repository.GetUserEvents(params)
 }
 
-func (service *Service) UpdateEvent(params EventOpts) error {
-	return service.repository.UpdateEvent(params)
+func (service *Service) UpdateEvent(eventData dto.Event) error {
+	return service.repository.UpdateEvent(eventData)
 }
 
 func (service *Service) DeleteEventById(id string) error {

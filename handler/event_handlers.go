@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/d-kuznetsov/calendar-backend/dto"
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
@@ -14,10 +15,10 @@ func CreateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 		throw401Error(wtr)
 		return
 	}
-	eventOpts := service.EventOpts{}
-	json.NewDecoder(req.Body).Decode(&eventOpts)
-	eventOpts.UserId = userId
-	eventId, err := svc.CreateEvent(eventOpts)
+	var eventData dto.Event
+	json.NewDecoder(req.Body).Decode(&eventData)
+	eventData.UserId = userId
+	eventId, err := svc.CreateEvent(eventData)
 	if err != nil {
 		throw500Error(wtr)
 		return
@@ -57,9 +58,9 @@ func UpdateEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 		throw401Error(wtr)
 		return
 	}
-	eventOpts := service.EventOpts{}
-	json.NewDecoder(req.Body).Decode(&eventOpts)
-	err = svc.UpdateEvent(eventOpts)
+	var eventData dto.Event
+	json.NewDecoder(req.Body).Decode(&eventData)
+	err = svc.UpdateEvent(eventData)
 	if err != nil {
 		throw500Error(wtr)
 		return
@@ -74,9 +75,9 @@ func DeleteEventHandler(wtr http.ResponseWriter, req *http.Request, svc service.
 		throw401Error(wtr)
 		return
 	}
-	var opts struct{ Id string }
-	json.NewDecoder(req.Body).Decode(&opts)
-	err = svc.DeleteEventById(opts.Id)
+	var eventData dto.Event
+	json.NewDecoder(req.Body).Decode(&eventData)
+	err = svc.DeleteEventById(eventData.Id)
 	if err != nil {
 		throw500Error(wtr)
 		return

@@ -9,14 +9,14 @@ import (
 type IRepository interface {
 	CreateUser(userData dto.User) (string, error)
 	GetUserByEmail(email string) (dto.User, error)
-	CreateEvent(params EventOpts) (string, error)
+	CreateEvent(eventData dto.Event) (string, error)
+	UpdateEvent(eventData dto.Event) error
+	DeleteEventById(id string) error
 	GetUserEvents(params struct {
 		PeriodStart string
 		PeriodEnd   string
 		UserId      string
 	}) ([]dto.Event, error)
-	UpdateEvent(params EventOpts) error
-	DeleteEventById(id string) error
 }
 
 type EventOpts struct {

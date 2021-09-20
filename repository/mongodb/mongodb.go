@@ -96,19 +96,19 @@ func toEntityEvent(event dbEvent) dto.Event {
 	}
 }
 
-func (repo *mongoRepo) CreateEvent(params repository.EventOpts) (string, error) {
+func (repo *mongoRepo) CreateEvent(eventData dto.Event) (string, error) {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	dbId, err := primitive.ObjectIDFromHex(params.UserId)
+	dbId, err := primitive.ObjectIDFromHex(eventData.UserId)
 	if err != nil {
 		return "", err
 	}
 	event := dbEvent{
-		Date:      params.Date,
-		StartTime: params.StartTime,
-		EndTime:   params.EndTime,
-		Content:   params.Content,
+		Date:      eventData.Date,
+		StartTime: eventData.StartTime,
+		EndTime:   eventData.EndTime,
+		Content:   eventData.Content,
 		UserId:    dbId,
 	}
 	res, err := coll.InsertOne(ctx, event)
@@ -157,22 +157,22 @@ func (repo *mongoRepo) GetUserEvents(params struct {
 	return events, err
 }
 
-func (repo *mongoRepo) UpdateEvent(params repository.EventOpts) error {
+func (repo *mongoRepo) UpdateEvent(eventData dto.Event) error {
 	coll := repo.client.Database(repo.dbName).Collection("events")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	dbId, err := primitive.ObjectIDFromHex(params.Id)
+	dbId, err := primitive.ObjectIDFromHex(eventData.Id)
 	if err != nil {
 		return err
 	}
 
 	_, err = coll.UpdateByID(ctx, dbId, bson.D{
 		{"$set", bson.M{
-			"date":      params.Date,
-			"startTime": params.StartTime,
-			"endTime":   params.EndTime,
-			"content":   params.Content,
+			"date":      eventData.Date,
+			"startTime": eventData.StartTime,
+			"endTime":   eventData.EndTime,
+			"content":   eventData.Content,
 		}},
 	})
 
