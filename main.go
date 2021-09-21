@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	cfg := config.GetConfig()
+	cfg := config.LoadConfig()
 	client := mongodb.CreateClient(cfg.DbUri)
 	repo := mongodb.CreateRepository(client, cfg.DbName)
 	svc := service.CreateService(repo)

@@ -20,7 +20,7 @@ func GetConfig() config {
 	return cfg
 }
 
-func init() {
+func LoadConfig() config {
 	viper.AddConfigPath("config")
 	viper.SetConfigName("config")
 	viper.AutomaticEnv()
@@ -34,4 +34,5 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	return cfg
 }
