@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/d-kuznetsov/calendar-backend/config"
+
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -16,7 +18,7 @@ func (service *Service) ParseToken(token string) (string, error) {
 	return parseToken(token)
 }
 
-var signingKey = "test_key"
+var signingKey = config.GetConfig().SigningKey
 
 const tokenTTL = 12 * time.Hour
 

@@ -6,20 +6,22 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
+	"github.com/d-kuznetsov/calendar-backend/config"
 	"github.com/d-kuznetsov/calendar-backend/handler"
 	"github.com/d-kuznetsov/calendar-backend/repository/mongodb"
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
 func main() {
-	client := mongodb.CreateClient("mongodb://localhost:27017")
-	repo := mongodb.CreateRepository(client, "calendar")
+	cfg := config.GetConfig()
+	client := mongodb.CreateClient(cfg.DbUri)
+	repo := mongodb.CreateRepository(client, cfg.DbName)
 	svc := service.CreateService(repo)
 	hdlr := handler.CreateHandler(svc)
 
 	router := mux.NewRouter()
 	corsHandler := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000"},
+		AllowedOrigins:   []string{cfg.ClientUri},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"*"},
 		Debug:            true,
@@ -31,5 +33,5 @@ func main() {
 	router.HandleFunc("/delete-event", hdlr.DeleteEvent).Methods("POST")
 	router.HandleFunc("/user-events", hdlr.GetEvents).Methods("GET")
 
-	http.ListenAndServe(":8080", corsHandler.Handler(router))
+	http.ListenAndServe(cfg.ServerUri, corsHandler.Handler(router))
 }
