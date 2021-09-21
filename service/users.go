@@ -10,7 +10,7 @@ import (
 )
 
 func (service *Service) Register(userData dto.User) (string, error) {
-	if userData.Name == "" || userData.Password == "" || !isEmailValid(userData.Email) {
+	if userData.Name == "" || userData.Password == "" || !checkEmail(userData.Email) {
 		return "", ErrIncorrectData
 	}
 
@@ -50,7 +50,7 @@ func (service *Service) Login(userData dto.User) (dto.User, error) {
 	return applicant, err
 }
 
-func isEmailValid(email string) bool {
+func checkEmail(email string) bool {
 	_, err := mail.ParseAddress(email)
 	return err == nil
 }
