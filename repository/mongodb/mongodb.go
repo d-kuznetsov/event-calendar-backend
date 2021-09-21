@@ -2,13 +2,12 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"github.com/d-kuznetsov/calendar-backend/log"
 	"github.com/d-kuznetsov/calendar-backend/repository"
 )
 
@@ -34,7 +33,7 @@ func CreateClient(uri string) *mongo.Client {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Connection to MongoDB is open.")
+	log.Info("Connection to MongoDB is open")
 	return client
 }
 

@@ -1,9 +1,9 @@
 package config
 
 import (
-	"log"
-
 	"github.com/spf13/viper"
+
+	"github.com/d-kuznetsov/calendar-backend/log"
 )
 
 type config struct {

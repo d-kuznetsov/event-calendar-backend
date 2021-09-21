@@ -25,7 +25,7 @@ func (hdlr *handler) CreateEvent(wtr http.ResponseWriter, req *http.Request) {
 		throwBadReqErr(wtr, err.Error())
 		return
 	} else if err != nil {
-		throwIntServerErr(wtr)
+		throwIntServerErr(wtr, err)
 		return
 	}
 
@@ -53,7 +53,7 @@ func (hdlr *handler) GetEvents(wtr http.ResponseWriter, req *http.Request) {
 		throwBadReqErr(wtr, err.Error())
 		return
 	} else if err != nil {
-		throwIntServerErr(wtr)
+		throwIntServerErr(wtr, err)
 		return
 	}
 
@@ -76,7 +76,7 @@ func (hdlr *handler) UpdateEvent(wtr http.ResponseWriter, req *http.Request) {
 		throwBadReqErr(wtr, err.Error())
 		return
 	} else if err != nil {
-		throwIntServerErr(wtr)
+		throwIntServerErr(wtr, err)
 		return
 	}
 
@@ -100,7 +100,7 @@ func (hdlr *handler) DeleteEvent(wtr http.ResponseWriter, req *http.Request) {
 		throwBadReqErr(wtr, err.Error())
 		return
 	} else if err != nil {
-		throwIntServerErr(wtr)
+		throwIntServerErr(wtr, err)
 		return
 	}
 

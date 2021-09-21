@@ -19,13 +19,13 @@ func (hdlr *handler) Register(wtr http.ResponseWriter, req *http.Request) {
 		throwBadReqErr(wtr, "User with this email already exists")
 		return
 	} else if err != nil {
-		throwIntServerErr(wtr)
+		throwIntServerErr(wtr, err)
 		return
 	}
 
 	token, err := hdlr.service.CreateToken(userId)
 	if err != nil {
-		throwIntServerErr(wtr)
+		throwIntServerErr(wtr, err)
 		return
 	}
 
@@ -48,13 +48,13 @@ func (hdlr *handler) Login(wtr http.ResponseWriter, req *http.Request) {
 		throwBadReqErr(wtr, "Incorrect email or password")
 		return
 	} else if err != nil {
-		throwIntServerErr(wtr)
+		throwIntServerErr(wtr, err)
 		return
 	}
 
 	token, err := hdlr.service.CreateToken(user.Id)
 	if err != nil {
-		throwIntServerErr(wtr)
+		throwIntServerErr(wtr, err)
 		return
 	}
 

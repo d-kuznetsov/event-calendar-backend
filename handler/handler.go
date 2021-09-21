@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/d-kuznetsov/calendar-backend/log"
 	"github.com/d-kuznetsov/calendar-backend/service"
 )
 
@@ -24,7 +25,8 @@ func throwUnauthorizedErr(wtr http.ResponseWriter) {
 	http.Error(wtr, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 }
 
-func throwIntServerErr(wtr http.ResponseWriter) {
+func throwIntServerErr(wtr http.ResponseWriter, err error) {
+	log.Error(err)
 	http.Error(wtr, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 
