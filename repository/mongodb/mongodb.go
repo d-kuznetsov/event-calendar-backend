@@ -7,8 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/d-kuznetsov/calendar-backend/log"
-	"github.com/d-kuznetsov/calendar-backend/repository"
+	"github.com/d-kuznetsov/event-calendar-backend/log"
+	"github.com/d-kuznetsov/event-calendar-backend/repository"
 )
 
 var timeout = 10 * time.Second

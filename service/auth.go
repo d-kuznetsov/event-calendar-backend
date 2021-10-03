@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/d-kuznetsov/calendar-backend/config"
+	"github.com/d-kuznetsov/event-calendar-backend/config"
 
 	"github.com/dgrijalva/jwt-go"
 )

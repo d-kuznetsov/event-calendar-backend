@@ -6,10 +6,10 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
-	"github.com/d-kuznetsov/calendar-backend/config"
-	"github.com/d-kuznetsov/calendar-backend/handler"
-	"github.com/d-kuznetsov/calendar-backend/repository/mongodb"
-	"github.com/d-kuznetsov/calendar-backend/service"
+	"github.com/d-kuznetsov/event-calendar-backend/config"
+	"github.com/d-kuznetsov/event-calendar-backend/handler"
+	"github.com/d-kuznetsov/event-calendar-backend/repository/mongodb"
+	"github.com/d-kuznetsov/event-calendar-backend/service"
 )
 
 func main() {

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/d-kuznetsov/calendar-backend/dto"
-	"github.com/d-kuznetsov/calendar-backend/service"
+	"github.com/d-kuznetsov/event-calendar-backend/dto"
+	"github.com/d-kuznetsov/event-calendar-backend/service"
 )
 
 func (hdlr *handler) CreateEvent(wtr http.ResponseWriter, req *http.Request) {

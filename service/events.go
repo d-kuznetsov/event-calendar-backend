@@ -3,7 +3,7 @@ package service
 import (
 	"regexp"
 
-	"github.com/d-kuznetsov/calendar-backend/dto"
+	"github.com/d-kuznetsov/event-calendar-backend/dto"
 )
 
 func (service *Service) CreateEvent(eventData dto.Event) (string, error) {

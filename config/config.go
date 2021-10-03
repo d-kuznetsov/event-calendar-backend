@@ -3,7 +3,7 @@ package config
 import (
 	"github.com/spf13/viper"
 
-	"github.com/d-kuznetsov/calendar-backend/log"
+	"github.com/d-kuznetsov/event-calendar-backend/log"
 )
 
 type config struct {

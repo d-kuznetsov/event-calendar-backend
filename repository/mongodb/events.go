@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/d-kuznetsov/calendar-backend/dto"
+	"github.com/d-kuznetsov/event-calendar-backend/dto"
 )
 
 func toDtoEvent(event dbEvent) dto.Event {

@@ -1,4 +1,4 @@
-module github.com/d-kuznetsov/calendar-backend
+module github.com/d-kuznetsov/event-calendar-backend
 
 go 1.16
 

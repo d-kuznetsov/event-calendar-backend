@@ -11,7 +11,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/d-kuznetsov/calendar-backend/dto"
+	"github.com/d-kuznetsov/event-calendar-backend/dto"
 )
 
 type FakeService struct{}

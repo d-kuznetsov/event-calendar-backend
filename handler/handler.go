@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/d-kuznetsov/calendar-backend/log"
-	"github.com/d-kuznetsov/calendar-backend/service"
+	"github.com/d-kuznetsov/event-calendar-backend/log"
+	"github.com/d-kuznetsov/event-calendar-backend/service"
 )
 
 type handler struct {

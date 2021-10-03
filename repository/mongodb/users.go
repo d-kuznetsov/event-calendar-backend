@@ -7,8 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/d-kuznetsov/calendar-backend/dto"
-	"github.com/d-kuznetsov/calendar-backend/repository"
+	"github.com/d-kuznetsov/event-calendar-backend/dto"
+	"github.com/d-kuznetsov/event-calendar-backend/repository"
 )
 
 func toDtoUser(user dbUser) dto.User {

@@ -5,8 +5,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/d-kuznetsov/calendar-backend/dto"
-	"github.com/d-kuznetsov/calendar-backend/repository"
+	"github.com/d-kuznetsov/event-calendar-backend/dto"
+	"github.com/d-kuznetsov/event-calendar-backend/repository"
 )
 
 func (service *Service) Register(userData dto.User) (string, error) {
